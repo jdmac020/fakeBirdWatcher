@@ -15,34 +15,19 @@ namespace FakeBirdWatcher
          
         static void Main(string[] args)
         {
+            var watcher = new BirdWatcher();
+
+            watcher.Watch();
+
+            Environment.Exit(0);
+
             var _console = new ConsoleService();
-
-            _console.PrintIntro();
-            _console.SectionBreak();
-
-            var userName = _console.GetUserAccountName();
-            var passWord = _console.GetAccountPassword();
-            var targetAccount = _console.GetTargetAccount();
-
-            _console.SectionBreak();
-            _console.DisplayMessage("Logging Into Twitter...");
-
-            var twitter = new TwitterHandler(userName, passWord, targetAccount);
-
-            try
-            {
-                twitter.Login();
-            }
-            catch (TwitterException te)
-            {
-                _console.ErrorHandler(te.Message);
-                Environment.Exit(0);
-            }
+            
 
             
 
             var foo = 0;
-            
+
 
             //// navigate to user's follower list
             //var selectedUser = $"{startUrl}/realdonaldtrump/followers";
@@ -80,7 +65,7 @@ namespace FakeBirdWatcher
             //{
 
             //}
-            
+
             //if (protectedTimeline is null)
             //{
             //    var followerCount = string.Empty;
@@ -118,7 +103,7 @@ namespace FakeBirdWatcher
             //    }
             //    catch (NoSuchElementException)
             //    {
-                    
+
             //    }
 
             //    if (emptyTimelineMessage is null)
@@ -139,7 +124,7 @@ namespace FakeBirdWatcher
 
             //    foo++;
             //}
-            
+
             //if (canReport)
             //{
             //    var optionsMenu = driver.FindElementByCssSelector("[class='user-dropdown dropdown-toggle js-dropdown-toggle js-link js-tooltip btn plain-btn']");
@@ -173,16 +158,21 @@ namespace FakeBirdWatcher
             //            driver.SwitchTo().Frame("new-report-flow-frame");
 
             //            driver.FindElementById("block-btn").Click();
-                        
+
             //        }
 
-                    
+
             //    }
             //}
 
             //driver.Navigate().GoToUrl(selectedUser);
 
+            _console.ExitApp();
+        }
 
+        private void ExitApp()
+        {
+            
         }
     }
 }

@@ -36,8 +36,6 @@ namespace FakeBirdWatcher
         {
             WriteLine(errorMessage);
             WriteLine();
-            Write("Press any key to exit...");
-            ReadLine();
         }
 
         public string GetUserAccountName()
@@ -55,6 +53,12 @@ namespace FakeBirdWatcher
             Write($"{userPrompt}: ");
 
             return ReadLine();
+        }
+
+        public void ExitApp()
+        {
+            Write("Press any key to exit...");
+            ReadLine();
         }
 
         public string GetTargetAccount()

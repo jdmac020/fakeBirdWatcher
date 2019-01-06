@@ -31,22 +31,22 @@ namespace FakeBirdWatcher
 
             _driver.Navigate().GoToUrl(_baseUrl);
 
-            Thread.Sleep(TimeSpan.FromSeconds(1));
+            Pause();
 
             // login
             _driver.FindElementByName("session[username_or_email]").SendKeys(_userName);
 
-            Thread.Sleep(TimeSpan.FromSeconds(1));
+            Pause();
 
             var passWordBox = _driver.FindElementByName("session[password]");
 
             passWordBox.SendKeys(_password);
 
-            Thread.Sleep(TimeSpan.FromSeconds(1));
+            Pause();
 
             passWordBox.Submit();
 
-            Thread.Sleep(TimeSpan.FromSeconds(1));
+            Pause();
 
             if (!_driver.Url.Equals(_baseUrl))
             {
@@ -54,6 +54,20 @@ namespace FakeBirdWatcher
                 throw new TwitterException($"Your Login Did Not Work! Please Check that Password [{_password}] goes with Account [{_userName}] and try again!");
             }
                 
+        }
+
+        public void AccessTargetFollowers()
+        {
+            var targetFollowerUrl = $"{_baseUrl}/{_targetAccountName}/followers";
+
+            _driver.Navigate().GoToUrl(targetFollowerUrl);
+
+            Pause();
+        }
+
+        private void Pause()
+        {
+            Thread.Sleep(TimeSpan.FromSeconds(1));
         }
 
         private FirefoxDriver InitializeDriver()
