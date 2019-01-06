@@ -12,15 +12,22 @@ namespace FakeBirdWatcher
 {
     class Program
     {
+         
         static void Main(string[] args)
         {
+            var _console = new ConsoleService();
+
+            var userName = _console.GetUserAccountName();
+            var passWord = _console.GetAccountPassword();
+
+
             var startUrl = "https://twitter.com";
-            var userName = ConfigurationManager.AppSettings["UserName"];
-            var passWord = ConfigurationManager.AppSettings["PassWord"];
+            //var userName = ConfigurationManager.AppSettings["UserName"];
+            //var passWord = ConfigurationManager.AppSettings["PassWord"];
 
             // initialize
             var fireFoxService = FirefoxDriverService.CreateDefaultService(@"D:\GitHub\fakeBirdWatcher\FakeBirdWatcher\FakeBirdWatcher");
-            fireFoxService.FirefoxBinaryPath = @"C:\Program Files\Mozilla Firefox\firefox.exe";
+            //fireFoxService.FirefoxBinaryPath = @"C:\Program Files\Mozilla Firefox\firefox.exe";
 
             var driver = new FirefoxDriver(fireFoxService);
 
@@ -170,117 +177,9 @@ namespace FakeBirdWatcher
 
                         nextButton.Click();
 
-                        //done??
-
                         driver.SwitchTo().Frame("new-report-flow-frame");
 
-                        //var blockButton = driver.FindElementById("block-btn");
-
-                        //foo++;
-
-                        //blockButton.Click();
-
-                        //foo++;
-
-
-
-                        //var nextBut = driver.FindElementById("report-dialog").FindElement(By.Id("report-flow-button-next"));
-
-                        //foo++;
-
-                        //var reportWindow = driver.FindElementByClassName("modal-content");//.FindElement(By.Id("new-report-flow-frame"));
-
-                        //var handles = driver.WindowHandles;
-
-                        ////var active = driver.SwitchTo();//.ActiveElement();
-
-                        //foo++;
-                        
-                        ////var form = reportWindow.
-
-                        ////var form = active.FindElement(By.Id("report_webview_form"));
-                        
-                        //var dialog = driver.FindElementById("report-dialog");
-
-                        ////dialog.SendKeys(Keys.Tab);
-
-                        //try
-                        //{
-                            
-                        //}
-                        //catch (Exception e)
-                        //{
-                            
-                        //}
-
-
-                        //foo++; //var frame = dialog.FindElement(By.Id("new-report-flow-frame"));
-
-                        //try
-                        //{
-                        //    var but = driver.FindElementById("spam-btn");
-
-                        //    foo++;
-
-                        //    but.Click();
-
-                        //    foo++;
-                            
-                        //    var nextBut = driver.FindElementById("report-dialog").FindElement(By.Id("report-flow-button-next"));
-
-                        //    foo++;
-
-
-                        //}
-                        //catch (Exception e)
-                        //{
-
-                        //    //throw;
-                        //}
-
-                        //try
-                        //{
-                        //    var nextBut2 = driver.FindElementById("modal-content").FindElement(By.Id("report-flow-button-next"));
-                        //}
-                        //catch (Exception e)
-                        //{
-                            
-                        //}
-
-                        //try
-                        //{
-                        //    driver.SwitchTo().ParentFrame();
-                        //}
-                        //catch (Exception e)
-                        //{
-
-                        //    throw;
-                        //}
-
-                        //try
-                        //{
-                        //    var nextButt = driver.FindElementById("report-flow-button-next");
-                            
-                        //    nextButt.Click();
-
-                        //    Thread.Sleep(500);
-
-                        //    nextButt.Click();
-
-                        //    driver.SwitchTo().Frame("new-report-flow-frame");
-
-                        //    var blockButton = driver.FindElementById("block-btn");
-
-                        //    foo++;
-
-                        //    blockButton.Click();
-
-                        //    foo++;
-                        //}
-                        //catch (Exception e)
-                        //{
-                            
-                        //}
+                        driver.FindElementById("block-btn").Click();
                         
                     }
 
