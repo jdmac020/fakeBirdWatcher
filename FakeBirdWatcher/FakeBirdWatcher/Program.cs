@@ -17,16 +17,24 @@ namespace FakeBirdWatcher
         {
             var _console = new ConsoleService();
 
+            _console.PrintIntro();
+            _console.SectionBreak();
+
             var userName = _console.GetUserAccountName();
             var passWord = _console.GetAccountPassword();
+            var targetAccount = _console.GetTargetAccount();
 
+            _console.SectionBreak();
+
+            var twitter = new TwitterHandler(userName, passWord, targetAccount);
 
             var startUrl = "https://twitter.com";
             //var userName = ConfigurationManager.AppSettings["UserName"];
             //var passWord = ConfigurationManager.AppSettings["PassWord"];
 
             // initialize
-            var fireFoxService = FirefoxDriverService.CreateDefaultService(@"D:\GitHub\fakeBirdWatcher\FakeBirdWatcher\FakeBirdWatcher");
+            //var fireFoxService = FirefoxDriverService.CreateDefaultService(@"D:\GitHub\fakeBirdWatcher\FakeBirdWatcher\FakeBirdWatcher");
+            var fireFoxService = FirefoxDriverService.CreateDefaultService();
             //fireFoxService.FirefoxBinaryPath = @"C:\Program Files\Mozilla Firefox\firefox.exe";
 
             var driver = new FirefoxDriver(fireFoxService);

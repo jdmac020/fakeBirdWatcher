@@ -9,6 +9,24 @@ namespace FakeBirdWatcher
 {
     public class ConsoleService
     {
+        public void PrintIntro()
+        {
+            WriteLine("*** *** *** *** *** *** *** *** ***");
+            WriteLine("***                             ***");
+            WriteLine("***           Welcome           ***");
+            WriteLine("***      Fake Bird Watcher      ***");
+            WriteLine("***                             ***");
+            WriteLine("*** *** *** *** *** *** *** *** ***");
+            
+        }
+
+        public void SectionBreak()
+        {
+            WriteLine();
+            WriteLine();
+            WriteLine();
+        }
+
         public string GetUserAccountName()
         {
             return GetInput("Enter your account username or e-mail");
@@ -24,6 +42,11 @@ namespace FakeBirdWatcher
             Write($"{userPrompt}: ");
 
             return ReadLine();
+        }
+
+        public string GetTargetAccount()
+        {
+            return GetInput("Enter the account you'd like to scan");
         }
     }
 }
