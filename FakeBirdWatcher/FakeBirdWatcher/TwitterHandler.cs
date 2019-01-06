@@ -1,4 +1,5 @@
-﻿using OpenQA.Selenium.Firefox;
+﻿using OpenQA.Selenium;
+using OpenQA.Selenium.Firefox;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,7 +13,7 @@ namespace FakeBirdWatcher
     {
         private FirefoxDriver _driver;
 
-        private string _baseUrl = "https://twitter.com";
+        private string _baseUrl = "https://twitter.com/";
         private string _userName;
         private string _password;
         private string _targetAccountName;
@@ -52,6 +53,9 @@ namespace FakeBirdWatcher
             passWordBox.Submit();
 
             Pause();
+            Pause();
+
+            var thing = _driver.Url;
 
             if (!_driver.Url.Equals(_baseUrl))
             {
@@ -61,13 +65,156 @@ namespace FakeBirdWatcher
                 
         }
 
+        public string ReportFakeAccount()
+        {
+            var optionsMenu = _driver.FindElementByCssSelector("[class='user-dropdown dropdown-toggle js-dropdown-toggle js-link js-tooltip btn plain-btn']");
+
+            optionsMenu.Click();
+
+            var buttons = _driver.FindElementsByClassName("dropdown-link");
+
+            foreach (var button in buttons)
+            {
+                var text = button.Text;
+
+                if (text.Contains("Report"))
+                {
+                    button.Click();
+
+                    _driver.SwitchTo().Frame("new-report-flow-frame");
+
+                    Pause();
+
+                    _driver.FindElementById("spam-btn").Click();
+
+                    Pause();
+
+                    _driver.SwitchTo().ParentFrame();
+
+                    Pause();
+
+                    var nextButton = _driver.FindElementById("report-flow-button-next");
+
+                    nextButton.Click();
+
+                    Pause();
+
+                    nextButton.Click();
+
+                    _driver.SwitchTo().Frame("new-report-flow-frame");
+
+                    Pause();
+
+                    _driver.FindElementById("block-btn").Click();
+
+                    Pause();
+
+                    _driver.SwitchTo().ParentFrame();
+
+                    var userName = GetNameOfAccount(); //_driver.FindElementByCssSelector("class='username u-dir u-textTruncate'").GetAttribute("textContent");
+
+                    return $"{userName} Blocked And Reported Successfully!";
+                }
+            }
+
+            return "No One Was Blocked Or Reported...?";
+        }
+
+        public string GetNameOfAccount()
+        {
+            var userName = _driver.FindElementByCssSelector("[class='u-linkComplex-target']").GetAttribute("textContent");
+            
+            return $"@{userName}";// _driver.FindElementByClassName("u-linkComplex-target").GetAttribute("textContent");
+        }
+
+        public int GetFollowerCount()
+        {
+            var followerCount = string.Empty;
+
+            try
+            {
+                followerCount = _driver.FindElementByCssSelector("[class='ProfileNav-item ProfileNav-item--followers']")
+                    .FindElement(By.CssSelector("[class='ProfileNav-value']")).GetAttribute("textContent");
+            }
+            catch (NoSuchElementException) { }
+            
+            if (!string.IsNullOrEmpty(followerCount))
+            {
+                var followerNumber = int.Parse(followerCount);
+
+                return followerNumber;
+            }
+
+            return 0;
+        }
+
+        public void NavigateToAccount(IWebElement birdToIdentify)
+        {
+            birdToIdentify.Click();
+            Pause();
+        }
+
+        private bool IsProtectedAccount()
+        {
+            IWebElement protectedTimeline = null;
+
+            try
+            {
+                protectedTimeline = _driver.FindElementByClassName("ProtectedTimeline");
+            }
+            catch (NoSuchElementException) { }
+
+            if (protectedTimeline is null)
+                return false;
+
+            return true;
+        }
+
+        private bool IsEmptyTimeline()
+        {
+            IWebElement emptyTimelineMessage = null;
+
+            try
+            {
+                emptyTimelineMessage = _driver.FindElementByClassName("ProfilePage-emptyModule");
+            }
+            catch (NoSuchElementException) { }
+
+            if (emptyTimelineMessage is null)
+                return false;
+
+            return true;
+        }
+
+        public int GetTweetCount()
+        {
+            if (IsProtectedAccount())
+                return -1;
+
+            if (IsEmptyTimeline())
+                return 0;
+
+            return _driver.FindElementsByCssSelector("[class*='tweet js-stream-tweet']").Count;
+        }
+
         public void AccessTargetFollowers()
         {
-            var targetFollowerUrl = $"{_baseUrl}/{_targetAccountName}/followers";
+            var targetFollowerUrl = $"{_baseUrl}{_targetAccountName}/followers";
 
             _driver.Navigate().GoToUrl(targetFollowerUrl);
 
             Pause();
+        }
+
+        public IWebElement GetNoPicFollower()
+        {
+            IReadOnlyCollection<IWebElement> followerBatch = null;
+
+            //var items = _driver.FindElementsByCssSelector("[class='ProfileCard-avatarLink js-nav js-tooltip']").Where(item => item.GetAttribute("src") == "https://abs.twimg.com/sticky/default_profile_images/default_profile_bigger.png");
+
+            followerBatch = _driver.FindElementsByCssSelector("[src='https://abs.twimg.com/sticky/default_profile_images/default_profile_bigger.png']");
+
+            return followerBatch.First();
         }
 
         private void Pause()

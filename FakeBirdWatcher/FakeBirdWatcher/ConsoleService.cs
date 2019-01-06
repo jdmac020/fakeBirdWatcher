@@ -66,5 +66,10 @@ namespace FakeBirdWatcher
         {
             return GetInput("Enter the account you'd like to scan");
         }
+
+        public string GetRunsToMake()
+        {
+            return GetInput("Enter the number of scans you'd like to make (eg, \"5\")");
+        }
     }
 }

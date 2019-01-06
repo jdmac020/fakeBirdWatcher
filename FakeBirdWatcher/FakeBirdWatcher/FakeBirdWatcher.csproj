@@ -6,8 +6,8 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{527A6BF7-1669-4AD1-A416-3855A5B63690}</ProjectGuid>
     <OutputType>Exe</OutputType>
-    <RootNamespace>FakeBirdWatcher</RootNamespace>
-    <AssemblyName>FakeBirdWatcher</AssemblyName>
+    <RootNamespace>BirdWatcher</RootNamespace>
+    <AssemblyName>BirdWatcher</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
