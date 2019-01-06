@@ -20,6 +20,11 @@ namespace FakeBirdWatcher
             
         }
 
+        public void DisplayMessage(string message)
+        {
+            WriteLine(message);
+        }
+
         public void SectionBreak()
         {
             WriteLine();

@@ -25,177 +25,152 @@ namespace FakeBirdWatcher
             var targetAccount = _console.GetTargetAccount();
 
             _console.SectionBreak();
+            _console.DisplayMessage("Logging Into Twitter...");
 
             var twitter = new TwitterHandler(userName, passWord, targetAccount);
 
-            var startUrl = "https://twitter.com";
-            //var userName = ConfigurationManager.AppSettings["UserName"];
-            //var passWord = ConfigurationManager.AppSettings["PassWord"];
-
-            // initialize
-            //var fireFoxService = FirefoxDriverService.CreateDefaultService(@"D:\GitHub\fakeBirdWatcher\FakeBirdWatcher\FakeBirdWatcher");
-            var fireFoxService = FirefoxDriverService.CreateDefaultService();
-            //fireFoxService.FirefoxBinaryPath = @"C:\Program Files\Mozilla Firefox\firefox.exe";
-
-            var driver = new FirefoxDriver(fireFoxService);
-
-            // navigate to twitter
-            driver.Navigate().GoToUrl(startUrl);
-
-            Thread.Sleep(TimeSpan.FromSeconds(1));
-
-            // login
-            driver.FindElementByName("session[username_or_email]").SendKeys(userName);
-
-            Thread.Sleep(TimeSpan.FromSeconds(1));
-
-            var passWordBox = driver.FindElementByName("session[password]");
-
-            passWordBox.SendKeys(passWord);
-
-            Thread.Sleep(TimeSpan.FromSeconds(1));
-
-            passWordBox.Submit();
-
-            Thread.Sleep(TimeSpan.FromSeconds(1));
-
-            // navigate to user's follower list
-            var selectedUser = $"{startUrl}/realdonaldtrump/followers";
-
-            driver.Navigate().GoToUrl(selectedUser);
-
-            Thread.Sleep(TimeSpan.FromSeconds(1));
-
-            // get group of followers
-
-            var followerBatch = driver.FindElementsByCssSelector("[src='https://abs.twimg.com/sticky/default_profile_images/default_profile_bigger.png']");
-
-
-            if (followerBatch.Count.Equals(0))
-            {
-                // to do--handle zero no pic profiles found
-            }
-
+            twitter.Login();
 
             var foo = 0;
-
-            followerBatch[0].Click();
-
-            var canReport = false;
-
-            Thread.Sleep(TimeSpan.FromSeconds(1));
-
-            IWebElement protectedTimeline = null;
-
-            try
-            {
-                protectedTimeline = driver.FindElementByClassName("ProtectedTimeline");
-            }
-            catch (NoSuchElementException)
-            {
-
-            }
             
-            if (protectedTimeline is null)
-            {
-                var followerCount = string.Empty;
 
-                try
-                {
-                    followerCount = driver.FindElementByCssSelector("[class='ProfileNav-item ProfileNav-item--followers']")
-                        .FindElement(By.CssSelector("[class='ProfileNav-value']")).GetAttribute("textContent");
-                }
-                catch (NoSuchElementException)
-                {
+            //// navigate to user's follower list
+            //var selectedUser = $"{startUrl}/realdonaldtrump/followers";
+
+            //driver.Navigate().GoToUrl(selectedUser);
+
+            //Thread.Sleep(TimeSpan.FromSeconds(1));
+
+            //// get group of followers
+
+            //var followerBatch = driver.FindElementsByCssSelector("[src='https://abs.twimg.com/sticky/default_profile_images/default_profile_bigger.png']");
 
 
-                }
+            //if (followerBatch.Count.Equals(0))
+            //{
+            //    // to do--handle zero no pic profiles found
+            //}
 
-                if (!string.IsNullOrEmpty(followerCount))
-                {
-                    var followerNumber = int.Parse(followerCount);
 
-                    if (followerNumber < 5)
-                    {
-                        canReport = true;
-                    }
-                }
-                else
-                {
-                    canReport = true;
-                }
+            //var foo = 0;
 
-                IWebElement emptyTimelineMessage = null;
+            //followerBatch[0].Click();
 
-                try
-                {
-                    emptyTimelineMessage = driver.FindElementByClassName("ProfilePage-emptyModule");
-                }
-                catch (NoSuchElementException)
-                {
+            //var canReport = false;
+
+            //Thread.Sleep(TimeSpan.FromSeconds(1));
+
+            //IWebElement protectedTimeline = null;
+
+            //try
+            //{
+            //    protectedTimeline = driver.FindElementByClassName("ProtectedTimeline");
+            //}
+            //catch (NoSuchElementException)
+            //{
+
+            //}
+            
+            //if (protectedTimeline is null)
+            //{
+            //    var followerCount = string.Empty;
+
+            //    try
+            //    {
+            //        followerCount = driver.FindElementByCssSelector("[class='ProfileNav-item ProfileNav-item--followers']")
+            //            .FindElement(By.CssSelector("[class='ProfileNav-value']")).GetAttribute("textContent");
+            //    }
+            //    catch (NoSuchElementException)
+            //    {
+
+
+            //    }
+
+            //    if (!string.IsNullOrEmpty(followerCount))
+            //    {
+            //        var followerNumber = int.Parse(followerCount);
+
+            //        if (followerNumber < 5)
+            //        {
+            //            canReport = true;
+            //        }
+            //    }
+            //    else
+            //    {
+            //        canReport = true;
+            //    }
+
+            //    IWebElement emptyTimelineMessage = null;
+
+            //    try
+            //    {
+            //        emptyTimelineMessage = driver.FindElementByClassName("ProfilePage-emptyModule");
+            //    }
+            //    catch (NoSuchElementException)
+            //    {
                     
-                }
+            //    }
 
-                if (emptyTimelineMessage is null)
-                {
-                    // check # of tweets
+            //    if (emptyTimelineMessage is null)
+            //    {
+            //        // check # of tweets
 
-                    var tweets = driver.FindElementsByCssSelector("[class*='tweet js-stream-tweet']");
+            //        var tweets = driver.FindElementsByCssSelector("[class*='tweet js-stream-tweet']");
 
-                    if (tweets.Count > 1)
-                    {
-                        canReport = false;
-                    }
-                }
-                else
-                {
-                    canReport = true;
-                }
+            //        if (tweets.Count > 1)
+            //        {
+            //            canReport = false;
+            //        }
+            //    }
+            //    else
+            //    {
+            //        canReport = true;
+            //    }
 
-                foo++;
-            }
+            //    foo++;
+            //}
             
-            if (canReport)
-            {
-                var optionsMenu = driver.FindElementByCssSelector("[class='user-dropdown dropdown-toggle js-dropdown-toggle js-link js-tooltip btn plain-btn']");
+            //if (canReport)
+            //{
+            //    var optionsMenu = driver.FindElementByCssSelector("[class='user-dropdown dropdown-toggle js-dropdown-toggle js-link js-tooltip btn plain-btn']");
 
-                optionsMenu.Click();
+            //    optionsMenu.Click();
 
-                var buttons = driver.FindElementsByClassName("dropdown-link");
+            //    var buttons = driver.FindElementsByClassName("dropdown-link");
 
-                foreach (var button in buttons)
-                {
-                    var text = button.Text;
+            //    foreach (var button in buttons)
+            //    {
+            //        var text = button.Text;
 
-                    if (text.Contains("Report"))
-                    {
-                        button.Click();
+            //        if (text.Contains("Report"))
+            //        {
+            //            button.Click();
 
-                        driver.SwitchTo().Frame("new-report-flow-frame");
+            //            driver.SwitchTo().Frame("new-report-flow-frame");
 
-                        driver.FindElementById("spam-btn").Click();
+            //            driver.FindElementById("spam-btn").Click();
 
-                        driver.SwitchTo().ParentFrame();
+            //            driver.SwitchTo().ParentFrame();
 
-                        var nextButton = driver.FindElementById("report-flow-button-next");
+            //            var nextButton = driver.FindElementById("report-flow-button-next");
 
-                        nextButton.Click();
+            //            nextButton.Click();
 
-                        Thread.Sleep(500);
+            //            Thread.Sleep(500);
 
-                        nextButton.Click();
+            //            nextButton.Click();
 
-                        driver.SwitchTo().Frame("new-report-flow-frame");
+            //            driver.SwitchTo().Frame("new-report-flow-frame");
 
-                        driver.FindElementById("block-btn").Click();
+            //            driver.FindElementById("block-btn").Click();
                         
-                    }
+            //        }
 
                     
-                }
-            }
+            //    }
+            //}
 
-            driver.Navigate().GoToUrl(selectedUser);
+            //driver.Navigate().GoToUrl(selectedUser);
 
 
         }
