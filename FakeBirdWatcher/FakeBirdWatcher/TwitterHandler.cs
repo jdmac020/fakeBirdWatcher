@@ -48,8 +48,9 @@ namespace FakeBirdWatcher
 
             Thread.Sleep(TimeSpan.FromSeconds(1));
 
-            if (_driver.Url.Contains(_userName).Equals(false))
+            if (!_driver.Url.Equals(_baseUrl))
             {
+                _driver.Quit();
                 throw new TwitterException($"Your Login Did Not Work! Please Check that Password [{_password}] goes with Account [{_userName}] and try again!");
             }
                 

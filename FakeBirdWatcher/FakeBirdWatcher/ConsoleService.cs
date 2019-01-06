@@ -32,6 +32,14 @@ namespace FakeBirdWatcher
             WriteLine();
         }
 
+        public void ErrorHandler(string errorMessage)
+        {
+            WriteLine(errorMessage);
+            WriteLine();
+            Write("Press any key to exit...");
+            ReadLine();
+        }
+
         public string GetUserAccountName()
         {
             return GetInput("Enter your account username or e-mail");

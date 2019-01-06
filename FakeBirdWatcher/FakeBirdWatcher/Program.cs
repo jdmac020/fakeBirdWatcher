@@ -29,7 +29,17 @@ namespace FakeBirdWatcher
 
             var twitter = new TwitterHandler(userName, passWord, targetAccount);
 
-            twitter.Login();
+            try
+            {
+                twitter.Login();
+            }
+            catch (TwitterException te)
+            {
+                _console.ErrorHandler(te.Message);
+                Environment.Exit(0);
+            }
+
+            
 
             var foo = 0;
             
