@@ -33,9 +33,20 @@ namespace FakeBirdWatcher
                     {
                         _console.DisplayMessage("This Account Has No Picture, 0-1 Tweets, and Less Than Five Followers. #fakeAccount");
 
-                        ReportAsFake();
-
+                        try
+                        {
+                            ReportAsFake();
+                        }
+                        catch (TwitterException e)
+                        {
+                            _console.DisplayMessage($"Problem with Reporting: [{e.Message}]");
+                        }
+                        
                         reported++;
+                    }
+                    else
+                    {
+                        _console.DisplayMessage("Appears to be real!");
                     }
 
                     count++;
@@ -76,8 +87,10 @@ namespace FakeBirdWatcher
             _console.DisplayMessage($"Identifying bird [{userName}]...");
 
             var meetsLowFollowerCriteria = LessThanFiveFollowers();
+            _console.DisplayMessage($"Less than 5 followers: [{meetsLowFollowerCriteria}]!");
 
             var meetsLowTweetCriteria = OneOrZeroTweets();
+            _console.DisplayMessage($"1 or Zero Tweets: [{meetsLowTweetCriteria}]!");
 
             return (meetsLowFollowerCriteria && meetsLowTweetCriteria);
         }

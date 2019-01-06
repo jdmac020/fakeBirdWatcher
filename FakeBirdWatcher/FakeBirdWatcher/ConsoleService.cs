@@ -41,12 +41,41 @@ namespace FakeBirdWatcher
 
         public string GetUserAccountName()
         {
-            return GetInput("Enter your account username or e-mail");
+            return GetInput("Enter your account username or e-mail (no @ needed)");
         }
 
         public string GetAccountPassword()
         {
-            return GetInput("Enter your account password");
+            string pass = "";
+
+            Write("Enter your account password: ");
+
+            do
+            {
+                ConsoleKeyInfo key = ReadKey(true);
+                // Backspace Should Not Work
+                if (key.Key != ConsoleKey.Backspace && key.Key != ConsoleKey.Enter)
+                {
+                    pass += key.KeyChar;
+                    Write("*");
+                }
+                else
+                {
+                    if (key.Key == ConsoleKey.Backspace && pass.Length > 0)
+                    {
+                        pass = pass.Substring(0, (pass.Length - 1));
+                        Write("\b \b");
+                    }
+                    else if (key.Key == ConsoleKey.Enter)
+                    {
+                        break;
+                    }
+                }
+            } while (true);
+
+            WriteLine();
+
+            return pass;
         }
 
         private string GetInput(string userPrompt)
@@ -64,7 +93,7 @@ namespace FakeBirdWatcher
 
         public string GetTargetAccount()
         {
-            return GetInput("Enter the account you'd like to scan");
+            return GetInput("Enter the account you'd like to scan (eg, \"realdonaldtrump\")");
         }
 
         public string GetRunsToMake()

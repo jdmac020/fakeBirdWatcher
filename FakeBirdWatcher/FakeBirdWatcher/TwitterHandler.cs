@@ -65,12 +65,35 @@ namespace FakeBirdWatcher
                 
         }
 
-        public string ReportFakeAccount()
+        private bool GetUserOptions()
         {
             var optionsMenu = _driver.FindElementByCssSelector("[class='user-dropdown dropdown-toggle js-dropdown-toggle js-link js-tooltip btn plain-btn']");
 
             optionsMenu.Click();
 
+            return true;
+        }
+
+        public string ReportFakeAccount()
+        {
+            var optionsAvail = false;
+            var attempts = 0;
+
+            while (optionsAvail.Equals(false) && attempts < 5)
+            {
+                try
+                {
+                    optionsAvail = GetUserOptions();
+                }
+                catch (Exception)
+                {
+                    _driver.Navigate().Refresh();
+                }
+            }
+
+            if (optionsAvail.Equals(false))
+                throw new TwitterException("Twitter Obscured The Context Menu");
+            
             var buttons = _driver.FindElementsByClassName("dropdown-link");
 
             foreach (var button in buttons)
