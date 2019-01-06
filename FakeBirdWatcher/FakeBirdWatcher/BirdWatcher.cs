@@ -26,6 +26,7 @@ namespace FakeBirdWatcher
             }
             finally
             {
+                _twitter.Quit();
                 _console.ExitApp();
             }
         }
@@ -35,13 +36,17 @@ namespace FakeBirdWatcher
             _console.PrintIntro();
             _console.SectionBreak();
 
+            _console.DisplayMessage("Your Info, Please...");
+
             var userName = _console.GetUserAccountName();
             var passWord = _console.GetAccountPassword();
             var targetAccount = _console.GetTargetAccount();
 
-            _twitter = new TwitterHandler(userName, passWord, targetAccount);
-
             _console.SectionBreak();
+            _console.DisplayMessage("Starting Firefox...");
+
+            _twitter = new TwitterHandler(userName, passWord, targetAccount);
+            
         }
 
         private void Login()

@@ -26,6 +26,11 @@ namespace FakeBirdWatcher
             _driver = InitializeDriver();
         }
 
+        public void Quit()
+        {
+            _driver.Quit();
+        }
+
         public void Login()
         {
 

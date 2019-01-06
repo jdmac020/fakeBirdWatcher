@@ -14,7 +14,7 @@ namespace FakeBirdWatcher
             WriteLine("*** *** *** *** *** *** *** *** ***");
             WriteLine("***                             ***");
             WriteLine("***           Welcome           ***");
-            WriteLine("***      Fake Bird Watcher      ***");
+            WriteLine("***        Bird Watcher!        ***");
             WriteLine("***                             ***");
             WriteLine("*** *** *** *** *** *** *** *** ***");
             
@@ -34,6 +34,7 @@ namespace FakeBirdWatcher
 
         public void ErrorHandler(string errorMessage)
         {
+            WriteLine();
             WriteLine(errorMessage);
             WriteLine();
         }
