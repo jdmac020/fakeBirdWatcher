@@ -78,6 +78,11 @@ namespace FakeBirdWatcher
             return pass;
         }
 
+        public string GetContinue(string continueAmount)
+        {
+            return GetInput($"Type \"Y\" to Keep Scanning for {continueAmount} Times, Press Enter to Exit");
+        }
+
         private string GetInput(string userPrompt)
         {
             Write($"{userPrompt}: ");

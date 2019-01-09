@@ -12,48 +12,30 @@ namespace FakeBirdWatcher
         private ConsoleService _console = new ConsoleService();
         private TwitterHandler _twitter;
         private int _attemptsToMake;
+        private int _count;
+        private int _reported;
         
         public void Watch()
         {
-            var count = 0;
-            var reported = 0;
+            _count = 0;
+            _reported = 0;
             
             try
             {
                 InitializeRun();
                 Login();
 
-                while (count < _attemptsToMake)
+                var canRun = true;
+
+                while (canRun)
                 {
-                    var birdOfInterest = GetBirdToIdentify();
+                    RunLoop();
 
-                    var isFake = IdentifyFakeBird(birdOfInterest);
-
-                    if (isFake)
-                    {
-                        _console.DisplayMessage("This Account Has No Picture, 0-1 Tweets, and Less Than Five Followers. #fakeAccount");
-
-                        try
-                        {
-                            ReportAsFake();
-                        }
-                        catch (TwitterException e)
-                        {
-                            _console.DisplayMessage($"Problem with Reporting: [{e.Message}]");
-                        }
-                        
-                        reported++;
-                    }
-                    else
-                    {
-                        _console.DisplayMessage("Appears to be real!");
-                    }
-
-                    count++;
+                    canRun = CheckContinue();
                 }
-
+                
                 _console.SectionBreak();
-                _console.DisplayMessage($"End Of Run! {reported} Accounts Were Reported!");
+                _console.DisplayMessage($"End Of Run! {_count} Accounts Were Checked and {_reported} Accounts Were Reported This Session!");
                 
             }
             catch (Exception e)
@@ -67,6 +49,54 @@ namespace FakeBirdWatcher
 
                 _console.ExitApp();
             }
+        }
+
+        private bool CheckContinue()
+        {
+            var continueInput = _console.GetContinue(_attemptsToMake.ToString());
+
+            if (string.IsNullOrEmpty(continueInput))
+                return false;
+
+            return true;
+        }
+
+        private void RunLoop()
+        {
+            var count = 0;
+            var reported = 0;
+
+            while (count < _attemptsToMake)
+            {
+                var birdOfInterest = GetBirdToIdentify();
+
+                var isFake = IdentifyFakeBird(birdOfInterest);
+
+                if (isFake)
+                {
+                    _console.DisplayMessage("This Account Has No Picture, 0-1 Tweets, and Less Than Five Followers. #fakeAccount");
+
+                    try
+                    {
+                        ReportAsFake();
+                    }
+                    catch (TwitterException e)
+                    {
+                        _console.DisplayMessage($"Problem with Reporting: [{e.Message}]");
+                    }
+
+                    reported++;
+                }
+                else
+                {
+                    _console.DisplayMessage("Appears to be real!");
+                }
+
+                count++;
+            }
+
+            _count += count;
+            _reported += reported;
         }
 
         private void ReportAsFake()
