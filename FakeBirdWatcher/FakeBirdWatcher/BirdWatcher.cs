@@ -14,6 +14,7 @@ namespace FakeBirdWatcher
         private int _attemptsToMake;
         private int _count;
         private int _reported;
+        private string _currentUser;
         
         public void Watch()
         {
@@ -53,6 +54,8 @@ namespace FakeBirdWatcher
 
         private bool CheckContinue()
         {
+            _console.SectionBreak();
+
             var continueInput = _console.GetContinue(_attemptsToMake.ToString());
 
             if (string.IsNullOrEmpty(continueInput))
@@ -72,7 +75,7 @@ namespace FakeBirdWatcher
 
                 var isFake = IdentifyFakeBird(birdOfInterest);
 
-                if (isFake)
+                if (isFake.Equals(1))
                 {
                     _console.DisplayMessage("This Account Has No Picture, 0-1 Tweets, and Less Than Five Followers. #fakeAccount");
 
@@ -87,9 +90,14 @@ namespace FakeBirdWatcher
 
                     reported++;
                 }
-                else
+                else if (isFake.Equals(0))
                 {
                     _console.DisplayMessage("Appears to be real!");
+                }
+                else
+                {
+                    count--;
+                    _console.DisplayMessage("Skipping a previously checked account!");
                 }
 
                 count++;
@@ -108,11 +116,19 @@ namespace FakeBirdWatcher
             _console.DisplayMessage(result);
         }
 
-        private bool IdentifyFakeBird(IWebElement birdToIdentify)
+        private int IdentifyFakeBird(IWebElement birdToIdentify)
         {
             _twitter.NavigateToAccount(birdToIdentify);
 
             var userName = _twitter.GetNameOfAccount();
+
+            if (userName.Equals(_currentUser))
+            {
+                _console.DisplayMessage("Whoops, just checked this one...");
+                return -1;
+            }
+
+            _currentUser = userName;
 
             _console.DisplayMessage($"Identifying bird [{userName}]...");
 
@@ -122,7 +138,10 @@ namespace FakeBirdWatcher
             var meetsLowTweetCriteria = OneOrZeroTweets();
             _console.DisplayMessage($"1 or Zero Tweets: [{meetsLowTweetCriteria}]!");
 
-            return (meetsLowFollowerCriteria && meetsLowTweetCriteria);
+            if (meetsLowFollowerCriteria && meetsLowTweetCriteria)
+                return 1;
+
+            return 0;
         }
 
         private bool LessThanFiveFollowers()
