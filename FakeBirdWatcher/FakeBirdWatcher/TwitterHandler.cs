@@ -16,12 +16,14 @@ namespace FakeBirdWatcher
         private string _baseUrl = "https://twitter.com/";
         private string _userName;
         private string _password;
+        private bool _privateAccount;
         private string _targetAccountName;
 
-        public TwitterHandler(string userName, string password, string targetUsername)
+        public TwitterHandler(string userName, string password, bool privateAccount, string targetUsername)
         {
             _userName = userName;
             _password = password;
+            _privateAccount = privateAccount;
             _targetAccountName = targetUsername;
 
             _driver = InitializeDriver();
@@ -122,8 +124,11 @@ namespace FakeBirdWatcher
 
                     Pause();
 
-                    nextButton.Click();
-
+                    if (_privateAccount.Equals(false))
+                    {
+                        nextButton.Click();
+                    }
+                    
                     _driver.SwitchTo().Frame("new-report-flow-frame");
 
                     Pause();

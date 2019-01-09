@@ -180,14 +180,16 @@ namespace FakeBirdWatcher
 
             var userName = _console.GetUserAccountName();
             var passWord = _console.GetAccountPassword();
+            var protectedAccountInput = _console.GetPrivateAccount();
             var targetAccount = _console.GetTargetAccount();
             var numberOfRuns = _console.GetRunsToMake();
 
             _console.SectionBreak();
             _console.DisplayMessage("Starting Firefox...");
 
+            var protectedAccountBool = !string.IsNullOrEmpty(protectedAccountInput);
             _attemptsToMake = int.Parse(numberOfRuns);
-            _twitter = new TwitterHandler(userName, passWord, targetAccount);
+            _twitter = new TwitterHandler(userName, passWord, protectedAccountBool, targetAccount);
             
         }
 

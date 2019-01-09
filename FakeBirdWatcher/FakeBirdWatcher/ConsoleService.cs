@@ -83,6 +83,11 @@ namespace FakeBirdWatcher
             return GetInput($"Type \"Y\" to Keep Scanning for {continueAmount} Times, Press Enter to Exit");
         }
 
+        public string GetPrivateAccount()
+        {
+            return GetInput("Is Your Account Locked (your tweets protected)? Type \"Y\" or Press Enter for No");
+        }
+
         private string GetInput(string userPrompt)
         {
             Write($"{userPrompt}: ");
