@@ -6,8 +6,8 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{527A6BF7-1669-4AD1-A416-3855A5B63690}</ProjectGuid>
     <OutputType>Exe</OutputType>
-    <RootNamespace>FakeBirdWatcher</RootNamespace>
-    <AssemblyName>FakeBirdWatcher</AssemblyName>
+    <RootNamespace>BirdWatcher</RootNamespace>
+    <AssemblyName>BirdWatcher</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
@@ -47,12 +47,21 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BirdWatcher.cs" />
+    <Compile Include="ConsoleService.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TwitterException.cs" />
+    <Compile Include="TwitterHandler.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="geckodriver.exe">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
