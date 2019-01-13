@@ -36,7 +36,6 @@ namespace BirdWatcher
                 }
                 
                 _console.SectionBreak();
-                // log account list to file
 
                 try
                 {
