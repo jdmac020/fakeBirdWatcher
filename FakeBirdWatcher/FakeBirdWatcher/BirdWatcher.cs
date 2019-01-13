@@ -169,16 +169,20 @@ namespace BirdWatcher
 
         private bool LessThanFiveFollowers()
         {
-            var followerCount = _twitter.GetFollowerCount();
+            var account = _scannedAccounts.Last();
 
-            return followerCount < 5;
+            account.FollowerCount = _twitter.GetFollowerCount();
+
+            return account.FollowerCount < 5;
         }
 
         private bool OneOrZeroTweets()
         {
-            var tweetCount = _twitter.GetTweetCount();
+            var account = _scannedAccounts.Last();
 
-            switch (tweetCount)
+            account.TweetCount = _twitter.GetTweetCount();
+
+            switch (account.TweetCount)
             {
                 case -1:
                     return false;

@@ -16,9 +16,14 @@ namespace BirdWatcher
             var fileName = $"ScannedAccounts_{DateTime.Today.ToString("yyyyMMdd")}.csv";
             var filePath = Path.Combine(directory, fileName);
 
+            var fileExists = File.Exists(filePath);
+
             using (StreamWriter streamWriter = File.AppendText(filePath))
             using (var csvWriter = new CsvWriter(streamWriter))
             {
+                if (fileExists)
+                    csvWriter.Context.HasHeaderBeenWritten = true;
+
                 csvWriter.WriteRecords(recordsToWrite);
             }
 
