@@ -150,6 +150,7 @@ namespace BirdWatcher
             if (account.UserName.Equals(_currentUser))
             {
                 _console.DisplayMessage($"Whoops, just checked {account.UserName}...");
+                _scannedAccounts.Remove(account);
                 return -1;
             }
             
