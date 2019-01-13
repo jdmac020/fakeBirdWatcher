@@ -13,15 +13,11 @@ namespace FakeBirdWatcher
         private ConsoleService _console = new ConsoleService();
         private TwitterHandler _twitter;
         private int _attemptsToMake;
-        private int _count;
-        private int _reported;
         private string _currentUser;
         private List<ScannedAccount> _scannedAccounts = new List<ScannedAccount>();
         
         public void Watch()
         {
-            _count = 0;
-            _reported = 0;
             
             try
             {
@@ -38,7 +34,7 @@ namespace FakeBirdWatcher
                 }
                 
                 _console.SectionBreak();
-                _console.DisplayMessage($"End Of Run! {_count} Accounts Were Checked and {_reported} Accounts Were Reported This Session!");
+                _console.DisplayMessage($"End Of Run! {_scannedAccounts.Count} Accounts Were Checked and {_scannedAccounts.Where(sa => sa.ReportedAndBlocked).Count()} Accounts Were Reported This Session!");
                 
             }
             catch (Exception e)
@@ -104,9 +100,6 @@ namespace FakeBirdWatcher
 
                 count++;
             }
-
-            _count += count;
-            _reported += reported;
         }
 
         private void ReportAsFake()
