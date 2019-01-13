@@ -1,4 +1,5 @@
-﻿using BirdWatcher.Dto;
+﻿using BirdWatcher;
+using BirdWatcher.Dto;
 using OpenQA.Selenium;
 using System;
 using System.Collections.Generic;
@@ -6,11 +7,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace FakeBirdWatcher
+namespace BirdWatcher
 {
     public class BirdWatcher
     {
         private ConsoleService _console = new ConsoleService();
+        private CsvHandler _csv = new CsvHandler();
         private TwitterHandler _twitter;
         private int _attemptsToMake;
         private string _currentUser;
@@ -34,6 +36,8 @@ namespace FakeBirdWatcher
                 }
                 
                 _console.SectionBreak();
+                // log account list to file
+                _csv.WriteListToFile(_scannedAccounts);
                 _console.DisplayMessage($"End Of Run! {_scannedAccounts.Count} Accounts Were Checked and {_scannedAccounts.Where(sa => sa.ReportedAndBlocked).Count()} Accounts Were Reported This Session!");
                 
             }
