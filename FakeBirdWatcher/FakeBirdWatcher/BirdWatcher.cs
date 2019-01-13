@@ -128,6 +128,8 @@ namespace FakeBirdWatcher
                 return -1;
             }
 
+
+
             _currentUser = userName;
 
             _console.DisplayMessage($"Identifying bird [{userName}]...");

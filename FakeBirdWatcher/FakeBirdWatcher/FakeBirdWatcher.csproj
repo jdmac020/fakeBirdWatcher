@@ -71,6 +71,7 @@
   <ItemGroup>
     <Compile Include="BirdWatcher.cs" />
     <Compile Include="ConsoleService.cs" />
+    <Compile Include="Dto\ScannedAccount.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TwitterException.cs" />
