@@ -15,6 +15,7 @@ namespace BirdWatcher.Dto
         public bool MeetsFakeFollowerCount { get; set; }
         public bool DeterminedFake { get; set; }
         public bool ReportedAndBlocked { get; set; }
-        public DateTime? ScannedTimeStamp { get; set; }
+        public string ScannedTimeStamp { get; set; }
+        public string ReportedTimeStamp { get; set; }
     }
 }

@@ -110,7 +110,20 @@ namespace BirdWatcher
         {
             _console.DisplayMessage("Reporting Account As Fake...");
 
-            var result = _twitter.ReportFakeAccount();
+            var result = string.Empty;
+
+            try
+            {
+                result = _twitter.ReportFakeAccount();
+
+                var account = _scannedAccounts.Last();
+                account.ReportedAndBlocked = true;
+                account.ReportedTimeStamp = DateTime.Now.ToString("yyyyMMdd HH:mm:ss");
+            }
+            catch (Exception e)
+            {
+                result = $"Something Went Wrong While Reporting or Blocking: {e.Message} -- Will Attempt to Continue Scanning...";
+            } 
 
             _console.DisplayMessage(result);
         }
@@ -143,8 +156,12 @@ namespace BirdWatcher
             _console.DisplayMessage($"1 or Zero Tweets: [{account.MeetsFakeTweetCount}]!");
 
             if (account.MeetsFakeFollowerCount && account.MeetsFakeTweetCount)
+            {
                 returnValue = 1;
+                account.DeterminedFake = true;
+            }
 
+            account.ScannedTimeStamp = DateTime.Now.ToString("yyyyMMdd HH:mm:ss");
             _scannedAccounts.Add(account);
 
             return returnValue;
