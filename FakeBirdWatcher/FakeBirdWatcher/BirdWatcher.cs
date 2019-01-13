@@ -1,25 +1,25 @@
-﻿using OpenQA.Selenium;
+﻿using BirdWatcher;
+using BirdWatcher.Dto;
+using OpenQA.Selenium;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace FakeBirdWatcher
+namespace BirdWatcher
 {
     public class BirdWatcher
     {
         private ConsoleService _console = new ConsoleService();
+        private CsvHandler _csv = new CsvHandler();
         private TwitterHandler _twitter;
         private int _attemptsToMake;
-        private int _count;
-        private int _reported;
         private string _currentUser;
+        private List<ScannedAccount> _scannedAccounts = new List<ScannedAccount>();
         
         public void Watch()
         {
-            _count = 0;
-            _reported = 0;
             
             try
             {
@@ -36,7 +36,17 @@ namespace FakeBirdWatcher
                 }
                 
                 _console.SectionBreak();
-                _console.DisplayMessage($"End Of Run! {_count} Accounts Were Checked and {_reported} Accounts Were Reported This Session!");
+
+                try
+                {
+                    _csv.WriteListToFile(_scannedAccounts);
+                }
+                catch (Exception e)
+                {
+                    _console.DisplayMessage($"Encountered a problem logging results: {e.Message}");
+                }
+                
+                _console.DisplayMessage($"End Of Run! {_scannedAccounts.Count} Accounts Were Checked and {_scannedAccounts.Where(sa => sa.ReportedAndBlocked).Count()} Accounts Were Reported This Session!");
                 
             }
             catch (Exception e)
@@ -102,60 +112,86 @@ namespace FakeBirdWatcher
 
                 count++;
             }
-
-            _count += count;
-            _reported += reported;
         }
 
         private void ReportAsFake()
         {
             _console.DisplayMessage("Reporting Account As Fake...");
 
-            var result = _twitter.ReportFakeAccount();
+            var result = string.Empty;
+
+            try
+            {
+                result = _twitter.ReportFakeAccount();
+
+                var account = _scannedAccounts.Last();
+                account.ReportedAndBlocked = true;
+                account.ReportedTimeStamp = DateTime.Now.ToString("yyyyMMdd HH:mm:ss");
+            }
+            catch (Exception e)
+            {
+                result = $"Something Went Wrong While Reporting or Blocking: {e.Message} -- Will Attempt to Continue Scanning...";
+            } 
 
             _console.DisplayMessage(result);
         }
 
         private int IdentifyFakeBird(IWebElement birdToIdentify)
         {
+            var account = new ScannedAccount();
+            _scannedAccounts.Add(account);
+            var returnValue = 0;
+
             _twitter.NavigateToAccount(birdToIdentify);
 
-            var userName = _twitter.GetNameOfAccount();
+            account.UserName = _twitter.GetNameOfAccount();
 
-            if (userName.Equals(_currentUser))
+            if (account.UserName.Equals(_currentUser))
             {
-                _console.DisplayMessage("Whoops, just checked this one...");
+                _console.DisplayMessage($"Whoops, just checked {account.UserName}...");
+                _scannedAccounts.Remove(account);
                 return -1;
             }
+            
+            _currentUser = account.UserName;
 
-            _currentUser = userName;
+            // check for suspended account
 
-            _console.DisplayMessage($"Identifying bird [{userName}]...");
+            _console.DisplayMessage($"Identifying bird [{account.UserName}]...");
 
-            var meetsLowFollowerCriteria = LessThanFiveFollowers();
-            _console.DisplayMessage($"Less than 5 followers: [{meetsLowFollowerCriteria}]!");
+            account.MeetsFakeFollowerCount = LessThanFiveFollowers();
+            _console.DisplayMessage($"Less than 5 followers: [{account.MeetsFakeFollowerCount}]!");
 
-            var meetsLowTweetCriteria = OneOrZeroTweets();
-            _console.DisplayMessage($"1 or Zero Tweets: [{meetsLowTweetCriteria}]!");
+            account.MeetsFakeTweetCount = OneOrZeroTweets();
+            _console.DisplayMessage($"1 or Zero Tweets: [{account.MeetsFakeTweetCount}]!");
 
-            if (meetsLowFollowerCriteria && meetsLowTweetCriteria)
-                return 1;
+            if (account.MeetsFakeFollowerCount && account.MeetsFakeTweetCount)
+            {
+                returnValue = 1;
+                account.DeterminedFake = true;
+            }
 
-            return 0;
+            account.ScannedTimeStamp = DateTime.Now.ToString("yyyyMMdd HH:mm:ss");
+            
+            return returnValue;
         }
 
         private bool LessThanFiveFollowers()
         {
-            var followerCount = _twitter.GetFollowerCount();
+            var account = _scannedAccounts.Last();
 
-            return followerCount < 5;
+            account.FollowerCount = _twitter.GetFollowerCount();
+
+            return account.FollowerCount < 5;
         }
 
         private bool OneOrZeroTweets()
         {
-            var tweetCount = _twitter.GetTweetCount();
+            var account = _scannedAccounts.Last();
 
-            switch (tweetCount)
+            account.TweetCount = _twitter.GetTweetCount();
+
+            switch (account.TweetCount)
             {
                 case -1:
                     return false;

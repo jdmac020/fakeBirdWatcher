@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Firefox;
 
-namespace FakeBirdWatcher
+namespace BirdWatcher
 {
     class Program
     {
