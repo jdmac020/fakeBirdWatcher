@@ -1,4 +1,5 @@
-﻿using OpenQA.Selenium;
+﻿using BirdWatcher.Dto;
+using OpenQA.Selenium;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,6 +16,7 @@ namespace FakeBirdWatcher
         private int _count;
         private int _reported;
         private string _currentUser;
+        private List<ScannedAccount> _scannedAccounts = new List<ScannedAccount>();
         
         public void Watch()
         {
@@ -118,32 +120,37 @@ namespace FakeBirdWatcher
 
         private int IdentifyFakeBird(IWebElement birdToIdentify)
         {
+            var account = new ScannedAccount();
+            var returnValue = 0;
+
             _twitter.NavigateToAccount(birdToIdentify);
 
-            var userName = _twitter.GetNameOfAccount();
+            account.UserName = _twitter.GetNameOfAccount();
 
-            if (userName.Equals(_currentUser))
+            if (account.UserName.Equals(_currentUser))
             {
-                _console.DisplayMessage("Whoops, just checked this one...");
+                _console.DisplayMessage($"Whoops, just checked {account.UserName}...");
                 return -1;
             }
+            
+            _currentUser = account.UserName;
 
+            // check for suspended account
 
+            _console.DisplayMessage($"Identifying bird [{account.UserName}]...");
 
-            _currentUser = userName;
+            account.MeetsFakeFollowerCount = LessThanFiveFollowers();
+            _console.DisplayMessage($"Less than 5 followers: [{account.MeetsFakeFollowerCount}]!");
 
-            _console.DisplayMessage($"Identifying bird [{userName}]...");
+            account.MeetsFakeTweetCount = OneOrZeroTweets();
+            _console.DisplayMessage($"1 or Zero Tweets: [{account.MeetsFakeTweetCount}]!");
 
-            var meetsLowFollowerCriteria = LessThanFiveFollowers();
-            _console.DisplayMessage($"Less than 5 followers: [{meetsLowFollowerCriteria}]!");
+            if (account.MeetsFakeFollowerCount && account.MeetsFakeTweetCount)
+                returnValue = 1;
 
-            var meetsLowTweetCriteria = OneOrZeroTweets();
-            _console.DisplayMessage($"1 or Zero Tweets: [{meetsLowTweetCriteria}]!");
+            _scannedAccounts.Add(account);
 
-            if (meetsLowFollowerCriteria && meetsLowTweetCriteria)
-                return 1;
-
-            return 0;
+            return returnValue;
         }
 
         private bool LessThanFiveFollowers()

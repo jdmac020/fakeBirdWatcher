@@ -13,5 +13,7 @@ namespace BirdWatcher.Dto
         public int TweetCount { get; set; }
         public bool MeetsFakeTweetCount { get; set; }
         public bool MeetsFakeFollowerCount { get; set; }
+        public bool DeterminedFake { get; set; }
+        public bool ReportedAndBlocked { get; set; }
     }
 }
