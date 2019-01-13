@@ -37,7 +37,16 @@ namespace BirdWatcher
                 
                 _console.SectionBreak();
                 // log account list to file
-                _csv.WriteListToFile(_scannedAccounts);
+
+                try
+                {
+                    _csv.WriteListToFile(_scannedAccounts);
+                }
+                catch (Exception e)
+                {
+                    _console.DisplayMessage($"Encountered a problem logging results: {e.Message}");
+                }
+                
                 _console.DisplayMessage($"End Of Run! {_scannedAccounts.Count} Accounts Were Checked and {_scannedAccounts.Where(sa => sa.ReportedAndBlocked).Count()} Accounts Were Reported This Session!");
                 
             }
@@ -131,6 +140,7 @@ namespace BirdWatcher
         private int IdentifyFakeBird(IWebElement birdToIdentify)
         {
             var account = new ScannedAccount();
+            _scannedAccounts.Add(account);
             var returnValue = 0;
 
             _twitter.NavigateToAccount(birdToIdentify);
@@ -162,8 +172,7 @@ namespace BirdWatcher
             }
 
             account.ScannedTimeStamp = DateTime.Now.ToString("yyyyMMdd HH:mm:ss");
-            _scannedAccounts.Add(account);
-
+            
             return returnValue;
         }
 
